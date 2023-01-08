@@ -4,7 +4,8 @@
   "description": "RESTful API for express",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "server:dev": "cross-env NODE_ENV=development nodemon server.js",
+    "server:prod": "cross-env NODE_ENV=production nodemon server.js"
   },
   "repository": {
     "type": "git",
