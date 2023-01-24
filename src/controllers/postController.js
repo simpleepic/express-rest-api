@@ -1,112 +1,70 @@
-const fs = require("fs");
-const path = require("path");
-
 const Post = require("../models/postModel");
 
-const testPost = (req, res) => {
+const catchAsync = require("../utils/catchAsync");
+const AppError = require("../utils/error/appError")
+
+
+// Retrieve
+const getAllPosts = catchAsync(async (req, res, next) => {
+  const posts = await Post.find();
+
   res.status(200).json({
     status: "success",
-    data: "Post working",
+    data: posts,
   });
-};
+});
 
+const getPostById = catchAsync(async (req, res, next) => {
+  const post = await Post.findById(req.params.id);
 
-
-const getAllPosts = async(req, res) => {
-  try {
-    const posts = await Post.find();
-
-    res.status(201).json({
-      status: "success",
-      data: posts,
-    });
-  } catch (error) {
-    console.log(error);
-
-    res.status(400).json({
-      status: "fail",
-      message: error,
-    });
+  if (!post) {
+    return next(new AppError("Post is not exists", 404))
   }
-};
 
-const getPostById = async(req, res) => {
-  try {
-    const post = await Post.findById(req.params.id);
+  res.status(200).json({
+    status: "success",
+    data: post,
+  });
+});
 
-    res.status(201).json({
-      status: "success",
-      data: post,
-    });
-  } catch (error) {
-    console.log(error);
+// Create
+const createPost = catchAsync(async (req, res, next) => {
+  const newPost = await Post.create(req.body);
 
-    res.status(400).json({
-      status: "fail",
-      message: error,
-    });
+  res.status(200).json({
+    status: "success",
+    data: newPost,
+  });
+});
+
+// Update
+const updatePost = catchAsync(async (req, res, next) => {
+  const updatedPost = await Post.findOneAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+  });
+
+  res.status(200).json({
+    status: "success",
+    data: updatedPost,
+  });
+});
+
+// Delete
+const deletePost = catchAsync(async (req, res, next) => {
+  const post = await Post.findByIdAndDelete(req.params.id);
+
+  if (!post) {
+    return next(new AppError("Post is not exists", 404))
   }
-};
 
-const createPost = async (req, res) => {
-  try {
-    const newPost = await Post.create(req.body);
-
-    res.status(201).json({
-      status: "success",
-      data: newPost,
-    });
-  } catch (error) {
-    console.log(error);
-
-    res.status(400).json({
-      status: "fail",
-      message: error,
-    });
-  }
-};
-
-const updatePost = async (req, res) => {
-  try {
-    const post = await Post.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true
-    });
-
-    res.status(201).json({
-      status: "success",
-      data: post,
-    });
-  } catch (error) {
-    console.log(error);
-
-    res.status(404).json({
-      status: "fail",
-      message: error,
-    });
-  }
-};
-
-const deletePost = async(req, res) => {
-  try {
-    await Post.findByIdAndDelete(req.params.id);
-
-    res.status(201).json({
-      status: "success",
-      message: "post deleted",
-    });
-  } catch (error) {
-    console.log(error);
-
-    res.status(404).json({
-      status: "fail",
-      message: error,
-    });
-  }
-};
+  res.status(200).json({
+    status: "success",
+    message: "Post is deleted",
+  });
+});
 
 module.exports = {
-  testPost,
   getAllPosts,
   getPostById,
   createPost,

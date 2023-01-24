@@ -1,0 +1,20 @@
+[
+  {
+    "id": 0,
+    "title": "Post 1",
+    "content": "Sample content 1",
+    "createdAt": "01-01-2023"
+  },
+  {
+    "id": 1,
+    "title": "Post 2",
+    "content": "Sample content 2",
+    "createdAt": "02-01-2023"
+  },
+  {
+    "id": 2,
+    "title": "Post 3",
+    "content": "Sample content 3",
+    "createdAt": "03-01-2023"
+  }
+]

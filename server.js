@@ -1,44 +1,19 @@
-const mongoose = require("mongoose");
-const colors = require("colors");
-const dotenv = require("dotenv");
+const colors = require("colors")
+const dotenv = require("dotenv")
+const mongoose = require("mongoose")
 
-// Uncaught excpetions handling
-process.on("uncaughtException", (err) => {
-  console.log("UNCAUGHT EXCEPTION: Server Shutting down");
-  console.log(err.name, err.message);
+dotenv.config({path: "./config.env"})
 
-  process.exit(1);
-});
+const app = require("./src/app")
 
-dotenv.config({ path: "./config.env" });
-
-const app = require("./src/app");
-
-// Database Connection
-mongoose.set("strictQuery", false);
-mongoose
-  .connect(
-    process.env.NODE_ENV === "development"
-      ? process.env.DATABASE_LOCAL
-      : process.env.DATABASE_CLOUD,
-    { useNewUrlParser: true }
-  )
-  .then(() => console.log(colors.green("Database is connected")));
+// Database connection
+mongoose.set("strictQuery", false)
+mongoose.connect(process.env.DATABASE_LOCAL, {useNewUrlParser: true}).then(
+    () => console.log(colors.yellow("Database is Connected"))
+)
 
 // Server running
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000
 const server = app.listen(PORT, () => {
-  console.log(
-    colors.green(
-      `App is running on port ${PORT} as ${process.env.NODE_ENV} mode`
-    )
-  );
-});
-
-// Unhandled rejections handling
-process.on("unhandledRejection", (err) => {
-  console.log("UNCAUGHT REJECTION: Server Shutting down");
-  console.log(err.name, err.message);
-
-  server.close(() => process.exit(1));
-});
+    console.log(colors.yellow(`Server is running now on port ${PORT} as ${process.env.NODE_ENV} mode`));
+})
