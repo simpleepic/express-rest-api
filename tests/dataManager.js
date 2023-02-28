@@ -14,7 +14,7 @@ const SAMPLE_POSTS = JSON.parse(
 
 // Database connection
 mongoose.set("strictQuery", false)
-mongoose.connect(process.env.DATABASE_LOCAL, {useNewUrlParser: true}).then(
+mongoose.connect(process.env.NODE_ENV === "production" ? process.env.DATABASE_CLOUD : process.env.DATABASE_LOCAL, {useNewUrlParser: true}).then(
     () => console.log(colors.yellow("Database is Connected for Testing"))
 )
 
